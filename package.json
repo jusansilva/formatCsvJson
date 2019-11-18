@@ -1,0 +1,22 @@
+{
+  "name": "formatcsvjson",
+  "version": "1.0.0",
+  "description": "Sistema que transforma json em CSV",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jusansilva/formatCsvJson.git"
+  },
+  "author": "Jusan Magno",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jusansilva/formatCsvJson/issues"
+  },
+  "homepage": "https://github.com/jusansilva/formatCsvJson#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
