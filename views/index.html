@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Convert CSV/Json</title>
-    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css">
 </head>
 <body>
 <div class="container">
      <form name="meu_form">
         <h1>Converção CSV / JSON</h1>
        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="convert" id="forCSV" value="0">
+            <input class="form-check-input" type="radio" name="convert" id="forCSV" onselect="/forJson" value="0">
             <label class="form-check-label" for="forCSV">
                 JSON para CSV
             </label>
         </div>
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="convert" id="forJSON" value="1">
+            <input class="form-check-input" type="radio" name="convert" id="forJSON" onselect="/forCsv" value="1">
             <label class="form-check-label" for="forJSON">
                 CSV para JSON
             </label>

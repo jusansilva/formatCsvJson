@@ -5,12 +5,12 @@ app.get('/', function(req, res){
     res.sendFile(__dirname + "/views/index.html");
 });
 
-app.get('/forJson', function(req, res){
-    
+app.post('/forJson', function(req, res){
+    res.sendFile(__dirname + "/views/json.html");
 });
 
-app.get('/forCsv', function(req, res){
-
+app.post('/forCsv', function(req, res){
+    res.sendFile(__dirname + "/views/csv.html");
 });
 
 
