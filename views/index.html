@@ -12,39 +12,25 @@
      <form action="/convert" method="POST">
         <h1>Converção CSV / JSON</h1>
         <div class="col-md-12">
-            <input type="file" name="file" id="file"  accept=".csv, .json">
+            <input class="btn btn-secondary" type="file" name="file" id="file" onchange="getTipe(this)"  accept=".csv, .json">
         </div>
-       <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="convert" id="convert" value="0">
-            <label class="form-check-input" for="forCSV">JSON para CSV</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="convert" id="convert" value="1">
-            <label class="form-check-input" for="forJSON">CSV para JSON</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="submit" name="submit">
-        </div>
+            <input class="form-check-input" type="hidden" name="convert" id="convert" value="0">
        
+        <div class="col-md-12" style="margin-top: 15px">
+            <input class="btn btn-secondary" type="submit" name="submit">
+        </div>   
     </form>
 </div>
 <script>
-function getURL(uri){
-    var file = document.getElementById("#file");
-    if(uri === "/forJson"){
-        $.post("Index-m.php", { screen: wi }).done(function() {
-            window.location.replace("Index-m.php");
-        }).fail(function() {
-        alert("error");
-        });
-    }else{
-
+    function getTipe(file)
+    {
+        if(getFileExtension(file) == ".json"){
+            document.getElementById('#convert').value = 0;
+        }if else(getFileExtension(file) == ".csv")
+        {
+            document.getElementById('#convert').value = 1;
+        }
     }
-    
-
-    window.location.href = uri
-}
 </script>
 </body>
 </html>

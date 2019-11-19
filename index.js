@@ -9,18 +9,17 @@ app.get('/', function(req, res){
 });
 
 app.post('/convert', function(req, res){
-    //var file = req.body.file
+    var file = req.body.file
     var convert = req.body.convert
 
     switch (convert) {
         case "0":
             var doc = JsonToCSV(file)
-            res.sendFile(__dirname + "/views/json.html")
-            break;
+            res.sendFile(doc)
             break;
         case "1":
-            var doc = JsonToCSV(file)
-            res.sendFile(__dirname + "/views/csv.html")
+            var doc = csvToJSON(file)
+            res.send(doc)
             break;
         default:
         console.log('ouve um erro na sua requisição!')
@@ -30,11 +29,15 @@ app.post('/convert', function(req, res){
     res.sendFile(__dirname + "/views/json.html");
 });
 
-app.get('/forCsv', function(req, res){
-    res.sendFile(__dirname + "/views/csv.html");
-});
-
-
+/**
+ * Json to Csv
+ *  
+ * Pega um objeto Json e transforma em Csv.
+ * 
+ * @param {*} objArray 
+ * 
+ * @return {*} Json 
+ */
 function JsonToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
     var str = '';
@@ -53,6 +56,15 @@ function JsonToCSV(objArray) {
     return str;
 }
 
+/**
+ * Csv to Json
+ * 
+ * Pega um arquivo Csv e codifica para Json
+ * 
+ * @param {*} csv 
+ * 
+ * @return csv 
+ */
 function csvToJSON(csv){
 
   var lines=csv.split("\n");
@@ -78,7 +90,9 @@ function csvToJSON(csv){
   return JSON.stringify(result); //JSON
 }
 
-
+/**
+ * retora a conexao
+ */
 app.listen(5000, function(){
     console.log('servidor conectado')
 })
