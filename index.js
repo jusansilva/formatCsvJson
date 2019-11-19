@@ -1,15 +1,36 @@
 const express = require('express')
 const app = new express()
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended : false }));
+
 
 app.get('/', function(req, res){
     res.sendFile(__dirname + "/views/index.html");
 });
 
-app.post('/forJson', function(req, res){
+app.post('/convert', function(req, res){
+    //var file = req.body.file
+    var convert = req.body.convert
+
+    switch (convert) {
+        case "0":
+            var doc = JsonToCSV(file)
+            res.sendFile(__dirname + "/views/json.html")
+            break;
+            break;
+        case "1":
+            var doc = JsonToCSV(file)
+            res.sendFile(__dirname + "/views/csv.html")
+            break;
+        default:
+        console.log('ouve um erro na sua requisição!')
+            res.send(req.body);
+            break;
+    }
     res.sendFile(__dirname + "/views/json.html");
 });
 
-app.post('/forCsv', function(req, res){
+app.get('/forCsv', function(req, res){
     res.sendFile(__dirname + "/views/csv.html");
 });
 
