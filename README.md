@@ -1,9 +1,4 @@
 # formatCsvJson
-<<<<<<< HEAD
-Sistema Node js que transforma arquivo **csv** em arquivo **json** e vice e versa
-=======
-Sitema Node js que transforma arquivo **csv** em arquivo **json** e vice e versa
->>>>>>> 73507faa6597b2e787f8d27246e706aa18e0ebfe
 
 # Starter
 
