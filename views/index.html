@@ -9,28 +9,15 @@
 </head>
 <body>
 <div class="container" style="margin-top:50px">
-     <form action="/convert" method="POST">
+     <form id="myform" action="/convert" method='POST' enctype="multipart/form-data">
         <h1>Converção CSV / JSON</h1>
         <div class="col-md-12">
-            <input class="btn btn-secondary" type="file" name="file" id="file" onchange="getTipe(this)"  accept=".csv, .json">
-        </div>
-            <input class="form-check-input" type="hidden" name="convert" id="convert" value="0">
-       
+            <input class="btn btn-secondary" type="file" name="file" id="file" accept=".csv, .json">
+        </div>       
         <div class="col-md-12" style="margin-top: 15px">
             <input class="btn btn-secondary" type="submit" name="submit">
         </div>   
     </form>
 </div>
-<script>
-    function getTipe(file)
-    {
-        if(getFileExtension(file) == ".json"){
-            document.getElementById('#convert').value = 0;
-        }if else(getFileExtension(file) == ".csv")
-        {
-            document.getElementById('#convert').value = 1;
-        }
-    }
-</script>
 </body>
 </html>

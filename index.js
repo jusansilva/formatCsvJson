@@ -1,32 +1,30 @@
 const express = require('express')
 const app = new express()
 var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended : false }));
+app.use(bodyParser.urlencoded({ extended: false }));
+var multer = require('multer')
+var upload = multer({ dest: 'temp/' })
+const fs = require('fs');
+const ObjectsToCsv = require('objects-to-csv');
 
 
-app.get('/', function(req, res){
+app.get('/', function (req, res) {
     res.sendFile(__dirname + "/views/index.html");
 });
 
-app.post('/convert', function(req, res){
-    var file = req.body.file
-    var convert = req.body.convert
+app.post('/convert', upload.single('file'), function (req, res) {
+    var file = req.file.originalname
 
-    switch (convert) {
-        case "0":
-            var doc = JsonToCSV(file)
-            res.sendFile(doc)
-            break;
-        case "1":
-            var doc = csvToJSON(file)
-            res.send(doc)
-            break;
-        default:
+    if (file.indexOf(".json") != -1) {
+        var doc = JsonToCSV(req.file.path)
+        res.send(doc)
+    } else if (file.indexOf(".csv") != -1) {
+        var doc = csvToJSON(req.file)
+        res.send(doc)
+    } else {
         console.log('ouve um erro na sua requisição!')
-            res.send(req.body);
-            break;
+        res.send(req.file);
     }
-    res.sendFile(__dirname + "/views/json.html");
 });
 
 /**
@@ -39,21 +37,18 @@ app.post('/convert', function(req, res){
  * @return {*} Json 
  */
 function JsonToCSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var str = '';
+    let rawdata = fs.readFileSync(objArray);
+    var array = JSON.parse(rawdata.toString());
 
-    for (var i = 0; i < array.length; i++) {
-        var line = '';
-        for (var index in array[i]) {
-            if (line != '') line += ','
+    async () => {
+        const csv = new ObjectsToCsv(objArray);
 
-            line += array[i][index];
-        }
+        // Save to file:
+        await csv.toDisk('./test.csv');
 
-        str += line + '\r\n';
-    }
-
-    return str;
+        // Return the CSV file as string:
+        return await csv.toString();
+    };
 }
 
 /**
@@ -65,34 +60,39 @@ function JsonToCSV(objArray) {
  * 
  * @return csv 
  */
-function csvToJSON(csv){
+function csvToJSON(csv) {
 
-  var lines=csv.split("\n");
+    var lines = csv.split("\n");
 
-  var result = [];
+    var result = [];
 
-  var headers=lines[0].split(",");
+    var headers = lines[0].split(",");
 
-  for(var i=1;i<lines.length;i++){
+    for (var i = 1; i < lines.length; i++) {
 
-	  var obj = {};
-	  var currentline=lines[i].split(",");
+        var obj = {};
+        var currentline = lines[i].split(",");
 
-	  for(var j=0;j<headers.length;j++){
-		  obj[headers[j]] = currentline[j];
-	  }
+        for (var j = 0; j < headers.length; j++) {
+            obj[headers[j]] = currentline[j];
+        }
 
-	  result.push(obj);
+        result.push(obj);
 
-  }
-  
-  //return result; //JavaScript object
-  return JSON.stringify(result); //JSON
+    }
+
+    //return result; //JavaScript object
+    return JSON.stringify(result); //JSON
+}
+
+
+function typeOf(obj) {
+    return {}.toString.call(obj).split(' ')[1].slice(0, -1).toLowerCase();
 }
 
 /**
  * retora a conexao
  */
-app.listen(5000, function(){
+app.listen(5000, function () {
     console.log('servidor conectado')
 })
