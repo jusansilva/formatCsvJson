@@ -1,30 +1,39 @@
 const express = require('express')
 const app = new express()
 var bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 app.use(bodyParser.urlencoded({ extended: false }));
-var multer = require('multer')
-var upload = multer({ dest: 'temp/' })
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: './tmp/'
+}));
 const fs = require('fs');
 const ObjectsToCsv = require('objects-to-csv');
+
+app.use('/exports', express.static(process.cwd() + '/exports'))
+app.use('/tmp', express.static(process.cwd() + '/tmp'))
 
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + "/views/index.html");
 });
 
-app.post('/convert', upload.single('file'), function (req, res) {
-    var file = req.file.originalname
-
-    if (file.indexOf(".json") != -1) {
-        var doc = JsonToCSV(req.file.path)
-        res.send(doc)
-    } else if (file.indexOf(".csv") != -1) {
-        var doc = csvToJSON(req.file)
-        res.send(doc)
-    } else {
-        console.log('ouve um erro na sua requisição!')
-        res.send(req.file);
+app.post('/convert', function (req, res) {
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
     }
+    doc = req.files.file
+
+    var name = req.files.file.name
+
+    if (name.indexOf(".json") != -1) {
+        var docs = JsonToCSV(doc.tempFilePath)
+        console.log(docs)
+        res.send(docs)
+    } else if (name.indexOf(".csv") != -1) {
+        var docs = csvToJSON(doc.tempFilePath)
+        res.send(docs)
+    } 
 });
 
 /**
@@ -37,18 +46,26 @@ app.post('/convert', upload.single('file'), function (req, res) {
  * @return {*} Json 
  */
 function JsonToCSV(objArray) {
-    let rawdata = fs.readFileSync(objArray);
-    var array = JSON.parse(rawdata.toString());
+    let json
+    let rawdata = fs.readFileSync(objArray, (erro, data) => {
+        json = JSON.parse(data.toString());
+        console.log(data)
 
-    async () => {
-        const csv = new ObjectsToCsv(objArray);
+         const csv = new ObjectsToCsv(json);
 
-        // Save to file:
-        await csv.toDisk('./test.csv');
+        const filename = uuid.v4() + ".csv"
+        fs.writeFile('./exports/' + filename, csv, function (err,data) {
+            if (err) throw err;
+            console.log('file saved');
+        });
 
         // Return the CSV file as string:
-        return await csv.toString();
-    };
+        return  data
+    });
+
+ 
+       
+    
 }
 
 /**
@@ -62,7 +79,7 @@ function JsonToCSV(objArray) {
  */
 function csvToJSON(csv) {
 
-    var lines = csv.split("\n");
+    var lines = csv.toString().split("\n");
 
     var result = [];
 
